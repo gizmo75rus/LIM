@@ -1,0 +1,2 @@
+# LIM
+Laboratory infrastructure management
