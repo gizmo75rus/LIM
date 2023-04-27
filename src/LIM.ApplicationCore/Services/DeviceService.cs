@@ -1,5 +1,6 @@
 using System.Net.Sockets;
 using LIM.ApplicationCore.Entities;
+using LIM.ApplicationCore.Exceptions;
 using LIM.ApplicationCore.Interfaces;
 using LIM.SharedKernel.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -15,8 +16,24 @@ public class DeviceService : IService, IDeviceService
         _repository = repository;
     }
 
+    public async Task<Device> Get(string manufacturer, string model)
+    {
+        var device = await _repository.Record<Device>(noTracking: true)
+            .FirstOrDefaultAsync(x => x.Manufacturer.Name == manufacturer && x.Model == model);
 
-    public async Task<Device> CreateDevice(string manufacturerName, string model, ProtocolType protocol)
+        if (device == null)
+            throw CommonException.NotFound;
+
+        return device;
+    }
+
+    public async Task<Dictionary<int, string?>> GetLookUp()
+    {
+        return await _repository.Record<Device>(noTracking: true)
+            .ToDictionaryAsync(key => key.Id, value => value.Manufacturer?.Name + ' ' + value.Model);
+    }
+
+    public async Task<Device> Create(string manufacturerName, string model, ProtocolType protocol)
     {
         var manufacturer = await _repository.Record<Manufacturer>(noTracking:false).FirstOrDefaultAsync(x => x.Name == manufacturerName);
         if (manufacturer == null)
@@ -46,5 +63,14 @@ public class DeviceService : IService, IDeviceService
 
         return device;
     }
-    
+
+    public async Task Update(Device device)
+    {
+        if (!await _repository.Record<Device>(noTracking:true).AnyAsync(x => x.Id == device.Id))
+            throw CommonException.NotFound;
+        
+        _repository.Update(device);
+        await _repository.SaveChangeAsync();
+    }
+
 }

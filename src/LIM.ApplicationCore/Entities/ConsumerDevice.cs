@@ -40,6 +40,11 @@ public class ConsumerDevice : JournaledEntity<Guid>
     /// Порт
     /// </summary>
     public short Port { get; set; }
+
+    /// <summary>
+    /// Удалено
+    /// </summary>
+    public bool Removed { get; set; }
     public Consumer? Consumer { get; set; }
     public Device? Device { get; set; }
     
