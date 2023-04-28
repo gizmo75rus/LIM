@@ -41,7 +41,9 @@ public class ConsumerService : IService,IConsumerService
 
     public async Task<Consumer> Get(int Id)
     {
-        var value = await _repository.Record<Consumer>(noTracking: true).FirstOrDefaultAsync(x => x.Id == Id);
+        var value = await _repository.Record<Consumer>(noTracking: true)
+            .Include(x=>x.ConsumerDevices)
+            .FirstOrDefaultAsync(x => x.Id == Id);
         if(value == null)
             throw CommonException.NotFound;
         return value;

@@ -30,6 +30,7 @@ public class DeviceService : IService, IDeviceService
     public async Task<Dictionary<int, string?>> GetLookUp()
     {
         return await _repository.Record<Device>(noTracking: true)
+            .Include(x=>x.Manufacturer)
             .ToDictionaryAsync(key => key.Id, value => value.Manufacturer?.Name + ' ' + value.Model);
     }
 

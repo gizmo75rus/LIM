@@ -1,23 +1,51 @@
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
+using LIM.Infrastructure;
+using LIM.WebApp.Filters;
+using LIM.WebApp.ServiceConfigurations;
+using Microsoft.AspNetCore.Mvc;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddVersioning();
 builder.Services.AddSwaggerGen();
+builder.Services.AddJwtAuthorization();
+builder.Services.AddNpgDbContext(builder.Configuration);
+//builder.Services.AddInMemoryDbContext();
+builder.Services.AddControllers(x=> {
+    x.Filters.Add(typeof(HttpGlobalExceptionFilter));
+});
+builder.Services.Configure<ApiBehaviorOptions>(op =>
+{
+    op.InvalidModelStateResponseFactory = _ => new ValidationActionResultFilter();
+});
+builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
+builder.Host.ConfigureContainer<ContainerBuilder>(container => container.RegisterModule(new ServiceModule()));
+
+builder.Services.AddMvc().AddJsonOptions(option=>{
+    option.JsonSerializerOptions.PropertyNamingPolicy = null;
+    option.JsonSerializerOptions.NumberHandling = System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString;
+    option.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+});
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.Services.InitDbContext();
 }
 
+app.UseRouting();
+app.UseCors(options => options.AllowAnyOrigin());
+app.UseStaticFiles();
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
