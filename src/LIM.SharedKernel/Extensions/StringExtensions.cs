@@ -11,4 +11,9 @@ public static class StringExtensions
         var startUnderscores = Regex.Match(input, @"^_+");
         return startUnderscores + Regex.Replace(input, @"([a-z0-9])([A-Z])", "$1_$2").ToLower();
     }
+    
+    public static bool IsPhoneString(this string text){
+        var expression = @"^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$";
+        return Regex.IsMatch(text,expression);
+    }
 }

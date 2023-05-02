@@ -1,5 +1,8 @@
+using System.Text.Json;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using LIM.Infrastructure;
 using LIM.WebApp.Filters;
 using LIM.WebApp.ServiceConfigurations;
@@ -15,9 +18,14 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddJwtAuthorization();
 builder.Services.AddNpgDbContext(builder.Configuration);
 //builder.Services.AddInMemoryDbContext();
-builder.Services.AddControllers(x=> {
+builder.Services.AddControllers(x =>
+{
     x.Filters.Add(typeof(HttpGlobalExceptionFilter));
 });
+
+builder.Services.AddFluentValidationAutoValidation()
+    .AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
+
 builder.Services.Configure<ApiBehaviorOptions>(op =>
 {
     op.InvalidModelStateResponseFactory = _ => new ValidationActionResultFilter();
@@ -26,7 +34,7 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 builder.Host.ConfigureContainer<ContainerBuilder>(container => container.RegisterModule(new ServiceModule()));
 
 builder.Services.AddMvc().AddJsonOptions(option=>{
-    option.JsonSerializerOptions.PropertyNamingPolicy = null;
+    option.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
     option.JsonSerializerOptions.NumberHandling = System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString;
     option.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
 });

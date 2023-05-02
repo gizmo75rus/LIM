@@ -1,5 +1,5 @@
-using System.Net.Sockets;
 using LIM.ApplicationCore.Entities;
+using LIM.ApplicationCore.Enums;
 using LIM.ApplicationCore.Exceptions;
 using LIM.ApplicationCore.Interfaces;
 using LIM.SharedKernel.Interfaces;
@@ -19,7 +19,7 @@ public class DeviceService : IService, IDeviceService
     public async Task<Device> Get(string manufacturer, string model)
     {
         var device = await _repository.Record<Device>(noTracking: true)
-            .FirstOrDefaultAsync(x => x.Manufacturer.Name == manufacturer && x.Model == model);
+            .FirstOrDefaultAsync(x => x.Manufacturer != null && x.Manufacturer.Name == manufacturer && x.Model == model);
 
         if (device == null)
             throw CommonException.NotFound;
@@ -27,7 +27,7 @@ public class DeviceService : IService, IDeviceService
         return device;
     }
 
-    public async Task<Dictionary<int, string?>> GetLookUp()
+    public async Task<Dictionary<int, string>> GetLookUp()
     {
         return await _repository.Record<Device>(noTracking: true)
             .Include(x=>x.Manufacturer)
@@ -36,18 +36,11 @@ public class DeviceService : IService, IDeviceService
 
     public async Task<Device> Create(string manufacturerName, string model, ProtocolType protocol)
     {
-        var manufacturer = await _repository.Record<Manufacturer>(noTracking:false).FirstOrDefaultAsync(x => x.Name == manufacturerName);
-        if (manufacturer == null)
-        {
-            manufacturer = new Manufacturer()
-            {
-                Name = manufacturerName
-            };
-            _repository.Insert(manufacturer);
-        }
+        var manufacturer = await _repository.Record<Manufacturer>(noTracking: true)
+            .FirstOrDefaultAsync(x => x.Name == manufacturerName) ?? new Manufacturer { Name = manufacturerName };
 
         var device = await _repository.Record<Device>(noTracking:false)
-            .FirstOrDefaultAsync(x => x.Manufacturer.Name == manufacturerName && x.Model == model);
+            .FirstOrDefaultAsync(x => x.Manufacturer != null && x.Manufacturer.Name == manufacturerName && x.Model == model);
 
         if (device == null)
         {
@@ -65,13 +58,21 @@ public class DeviceService : IService, IDeviceService
         return device;
     }
 
-    public async Task Update(Device device)
+    public async Task Update(int deviceId, string manufacturerName, string model, ProtocolType protocol)
     {
-        if (!await _repository.Record<Device>(noTracking:true).AnyAsync(x => x.Id == device.Id))
+        
+        var current = await _repository.Record<Device>(noTracking: false).FirstOrDefaultAsync(x => x.Id == deviceId);
+        if(current == null)
             throw CommonException.NotFound;
         
-        _repository.Update(device);
+        var manufacturer = await _repository.Record<Manufacturer>(noTracking: true)
+            .FirstOrDefaultAsync(x => x.Name == manufacturerName) ?? new Manufacturer { Name = manufacturerName };
+        
+        current.Model = model;
+        current.ProtocolType = protocol;
+        current.Manufacturer = manufacturer;
+        
+        _repository.Update(current);
         await _repository.SaveChangeAsync();
     }
-
 }

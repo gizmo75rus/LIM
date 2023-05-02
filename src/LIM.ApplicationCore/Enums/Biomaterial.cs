@@ -1,7 +1,9 @@
 using System.ComponentModel;
+using System.Text.Json.Serialization;
 
 namespace LIM.ApplicationCore.Enums;
 
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum Biomaterial
 {
     [Description("Кровь")]

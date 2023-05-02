@@ -1,5 +1,5 @@
-using System.Net.Sockets;
 using LIM.ApplicationCore.BaseObjects;
+using LIM.ApplicationCore.Enums;
 using LIM.SharedKernel.Interfaces;
 
 namespace LIM.ApplicationCore.Entities;
