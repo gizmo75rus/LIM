@@ -1,12 +1,12 @@
 using LIM.ApplicationCore.BaseObjects;
 using LIM.ApplicationCore.Enums;
 
-namespace LIM.ApplicationCore.Entities;
+namespace LIM.ApplicationCore.Models;
 
 /// <summary>
-/// тест выполняемый инструментом
+/// Исследование, выполняемое инструментом
 /// </summary>
-public class Test : JournaledEntity<int>
+public class Research : JournaledEntity<int>
 {
     public Guid? ConsumerDeviceId { get; set; }
 

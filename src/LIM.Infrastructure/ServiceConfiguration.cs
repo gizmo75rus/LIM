@@ -19,7 +19,7 @@ public static class ServiceConfigurationExtensions
     {
         using var serviceScope = provider.CreateScope();
         var ctx = serviceScope.ServiceProvider.GetRequiredService<AppDbContext>();
-        ctx.Database.EnsureDeleted();
+   //     ctx.Database.EnsureDeleted();
         ctx.Database.EnsureCreated();
         return provider;
     }

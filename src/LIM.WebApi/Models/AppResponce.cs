@@ -4,7 +4,24 @@ public class AppResponce
 {
     private readonly bool _success;
     private readonly IEnumerable<AppError>? _errors;
-    private readonly string? _message;
+    private string? _message;
+
+    public static AppResponce Ok()
+    {
+        return new AppResponce
+        {
+            Success = true,
+        };
+    }
+
+    public static AppResponce Ok(string messsage)
+    {
+        return new AppResponce
+        {
+            Success = true,
+            _message = messsage
+        };
+    }
 
     public AppResponce()
     {
@@ -40,42 +57,26 @@ public class AppResponce
         _message = message;
     }
 
-        
-    public bool Success => _success;
+
+    public bool Success { get; set; }
+
 
     public IEnumerable<AppError>? Errors => _errors;
 
     public string? Message => _message;
 
 }
-public class AppResponce<TData> : AppResponce
+public class AppResponce<TData> : AppResponce where TData : class
 {
     private readonly TData? _data;
 
-    public AppResponce(TData data) : base()
+    private AppResponce(TData data) : base()
     {
         _data = data;
+        Success = true;
     }
-
-    public AppResponce(AppError error) : base(error)
-    {
-
-    }
-
-    public AppResponce(string message) : base(message)
-    {
-
-    }
-
-    public AppResponce(string message, bool success) : base(message,success)
-    {
-
-    }
-
-    public AppResponce(IEnumerable<AppError> errors) : base(errors)
-    {
-
-    }
+    
+    public static AppResponce<TData> Ok(TData data) => new AppResponce<TData>(data);
 
 #pragma warning disable
     public TData Data => _data;

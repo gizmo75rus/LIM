@@ -1,6 +1,6 @@
 using LIM.ApplicationCore.BaseObjects;
 
-namespace LIM.ApplicationCore.Entities;
+namespace LIM.ApplicationCore.Models;
 
 /// <summary>
 /// Событие устройства

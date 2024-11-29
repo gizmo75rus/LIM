@@ -2,7 +2,7 @@ using LIM.ApplicationCore.BaseObjects;
 using LIM.ApplicationCore.Enums;
 using LIM.SharedKernel.Interfaces;
 
-namespace LIM.ApplicationCore.Entities;
+namespace LIM.ApplicationCore.Models;
 
 /// <summary>
 /// Лабораторный инструмент (анализатор, устройство...)
@@ -29,4 +29,6 @@ public class Device : BaseEntity<int>
     /// потребители
     /// </summary>
     public HashSet<ConsumerDevice>? ConsumerDevices { get; set; }
+
+    public virtual string LookupName => $"{Manufacturer?.Name} {Model}";
 }

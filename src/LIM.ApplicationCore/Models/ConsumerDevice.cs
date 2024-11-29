@@ -1,7 +1,7 @@
 using LIM.ApplicationCore.BaseObjects;
 using LIM.ApplicationCore.Enums;
 
-namespace LIM.ApplicationCore.Entities;
+namespace LIM.ApplicationCore.Models;
 
 /// <summary>
 /// Лабораторный инструмент потребителя
@@ -48,7 +48,8 @@ public class ConsumerDevice : JournaledEntity<Guid>
     public Consumer? Consumer { get; set; }
     public Device? Device { get; set; }
     
-    public HashSet<Test>? Tests { get; set; }
+    public HashSet<Research>? Researchs { get; set; }
     public HashSet<DeviceEvent>? DeviceEvents { get; set; }
-    
+
+    public virtual string LookupName => $"{Device?.LookupName}, endpoint:{HostAddress}:{Port}";
 }

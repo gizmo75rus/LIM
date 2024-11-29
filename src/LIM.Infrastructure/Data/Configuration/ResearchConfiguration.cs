@@ -1,13 +1,13 @@
-using LIM.ApplicationCore.Entities;
+using LIM.ApplicationCore.Models;
 using LIM.Infrastructure.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace LIM.Infrastructure.Data.Configuration;
 
-public class TestConfiguration : IEntityTypeConfiguration<Test>
+public class ResearchConfiguration : IEntityTypeConfiguration<Research>
 {
-    public void Configure(EntityTypeBuilder<Test> builder)
+    public void Configure(EntityTypeBuilder<Research> builder)
     {
         builder.HasKey(x => x.Id);
 
@@ -26,7 +26,7 @@ public class TestConfiguration : IEntityTypeConfiguration<Test>
             .IsString(250);
 
         builder.HasOne(x => x.ConsumerDevice)
-            .WithMany(x => x.Tests)
+            .WithMany(x => x.Researchs)
             .HasForeignKey(x => x.ConsumerDeviceId)
             .OnDelete(DeleteBehavior.SetNull);
 

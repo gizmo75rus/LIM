@@ -6,7 +6,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LIM.ApplicationCore", "src\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LIM.Infrastructure", "src\LIM.Infrastructure\LIM.Infrastructure.csproj", "{C5D91BB7-4671-4A2A-BF5D-104AFEA7CD33}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LIM.WebApp", "src\LIM.WebApp\LIM.WebApp.csproj", "{3172E25D-782B-434E-BCA7-669BDB5C38A5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LIM.WebApi", "src\LIM.WebApi\LIM.WebApi.csproj", "{3172E25D-782B-434E-BCA7-669BDB5C38A5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

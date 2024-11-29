@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 namespace LIM.ApplicationCore.Enums;
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
-public enum ErrorCode
+public enum ErrorCode : int
 {
     [Description("Внутреняя ошибка")]
     InternalError = 100,
@@ -29,5 +29,10 @@ public enum ErrorCode
     
     [Description("Действие запрещено")]
     ActionForbidden = 301,
-  
+    
+    [Description("Не удалось сохранить объект")]
+    FailedToSaveObject = 601,
+    
+    [Description("Имеются ссылки на указанный объект")]
+    ReferencesToObjectNotFree = 602
 }

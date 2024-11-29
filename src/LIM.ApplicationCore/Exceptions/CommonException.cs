@@ -17,6 +17,15 @@ public class CommonException : Exception
     }
 
 
-    public static CommonException NotFound => new CommonException(ErrorCode.NotFound, "Запись не найдена");
-    public static CommonException RecordExist => new CommonException(ErrorCode.RecordExist, "Запись существует");
+    public static CommonException NotFound => 
+        new CommonException(ErrorCode.NotFound, "Запись не найдена");
+    
+    public static CommonException RecordExist => 
+        new CommonException(ErrorCode.RecordExist, "Запись существует");
+
+    public static CommonException FailedToSaveObject =>
+        new CommonException(ErrorCode.FailedToSaveObject, "Не удалось сохранить объект");
+
+    public static CommonException ReferencesToObjectNotFree =>
+        new CommonException(ErrorCode.ReferencesToObjectNotFree, "Имеются связи на указанный объект ");
 }

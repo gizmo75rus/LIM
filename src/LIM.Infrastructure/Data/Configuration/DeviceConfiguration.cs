@@ -1,4 +1,4 @@
-using LIM.ApplicationCore.Entities;
+using LIM.ApplicationCore.Models;
 using LIM.Infrastructure.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
