@@ -1,3 +1,4 @@
+using LIM.ApplicationCore.BaseObjects;
 using LIM.ApplicationCore.Models;
 using LIM.ApplicationCore.Enums;
 using LIM.ApplicationCore.Exceptions;
@@ -9,17 +10,13 @@ using Microsoft.Extensions.Logging;
 
 namespace LIM.ApplicationCore.Services;
 
-public class DeviceService : IDeviceService
+public class DeviceService : AbstractService, IDeviceService
 {
     private readonly IRepository _repository;
-    private readonly ILogger _logger;
-    private readonly CancellationTokenSource _cts;
-
-    public DeviceService(IRepository repository, ILogger<DeviceService> logger)
+    public DeviceService(ILogger<DeviceService> logger, IRepository repository)
     {
-        _repository = repository;
         _logger = logger;
-        _cts = new CancellationTokenSource();
+        _repository = repository;
     }
 
     public async Task<DeviceEntry> Detail(int deviceId) => 
@@ -31,18 +28,21 @@ public class DeviceService : IDeviceService
 
     public async Task<Dictionary<int, string>> GetLookUp() => 
         await _repository
-        .Record<Device>()
-        .Include(x=>x.Manufacturer)
-        .ToDictionaryAsync(key => key.Id, value => value.LookupName, _cts.Token);
+            .Record<Device>()
+            .Include(x=>x.Manufacturer)
+            .ToDictionaryAsync(key => key.Id, value => value.LookupName, _cts.Token);
 
     public async Task<DeviceEntry> Create(string manufacturerName, string model, ProtocolType protocol)
     {
+        _logger.LogInformation("Creating new device");
         var manufacturer = await _repository.Record<Manufacturer>()
                                .FirstOrDefaultAsync(x => x.Name == manufacturerName, _cts.Token);
         if (manufacturer == null)
         {
             manufacturer = new Manufacturer(manufacturerName);
             await _repository.AddAsync(manufacturer, _cts.Token);
+
+            _logger.LogInformation($"Manufacturer: {manufacturerName} has been created");
         }
 
         var device = new Device()
@@ -51,20 +51,31 @@ public class DeviceService : IDeviceService
             ProtocolType = protocol,
             Model = model
         };
-        await _repository.AddAsync(device, _cts.Token);
+        int added = await _repository.AddAsync(device, _cts.Token);
+
+        if (added < 1)
+            throw CommonException.FailedToSaveObject;
+        
+        _logger.LogInformation($"Device: '{manufacturerName}' model: '{model}' has been added");
+        
         device.Manufacturer = manufacturer;
+        
         return DeviceEntry.Map(device);
     }
 
     public async Task Modify(int deviceId, int manufacturerId, string model, ProtocolType protocol)
     {
+        _logger.LogInformation($"Modifying device id:{manufacturerId} manufacturerId: {manufacturerId} model:{model}");
 
         var device = await _repository.Record<Device>().FirstOrDefaultAsync(x => x.Id == deviceId);
         var manufacturer = await _repository.Record<Manufacturer>()
             .FirstOrDefaultAsync(x => x.Id == deviceId);
-        
+
         if (device == null || manufacturer == null)
+        {
+            _logger.LogInformation("Device or manufacturer not found");
             throw CommonException.NotFound;
+        }
 
         device.Model = model;
         device.ProtocolType = protocol;
@@ -74,10 +85,13 @@ public class DeviceService : IDeviceService
 
         if (modified < 1)
             throw CommonException.FailedToSaveObject;
+        
+        _logger.LogInformation("Device has been updated");
     }
 
     public async Task Delete(int deviceId)
     {
+        _logger.LogInformation($"Deleting device id:{deviceId}");
         var device = await _repository.Record<Device>()
                          .Where(x => x.Id == deviceId)
                          .FirstOrDefaultAsync(_cts.Token) 
@@ -91,5 +105,6 @@ public class DeviceService : IDeviceService
         
         
         await _repository.DeleteAsync(device, _cts.Token);
+        _logger.LogInformation("Device has been deleted");
     }
 }
