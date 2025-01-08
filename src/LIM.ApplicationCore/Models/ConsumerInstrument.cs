@@ -6,10 +6,10 @@ namespace LIM.ApplicationCore.Models;
 /// <summary>
 /// Лабораторный инструмент потребителя
 /// </summary>
-public class ConsumerDevice : JournaledEntity<Guid>
+public class ConsumerInstrument : JournaledEntity<Guid>
 {
     public int? ConsumerId { get; set; }
-    public int? DeviceId { get; set; }
+    public int? InstrumentId { get; set; }
     
     /// <summary>
     /// Серийный номер
@@ -46,10 +46,12 @@ public class ConsumerDevice : JournaledEntity<Guid>
     /// </summary>
     public bool Removed { get; set; }
     public Consumer? Consumer { get; set; }
-    public Device? Device { get; set; }
+    public Instrument? Instrument { get; set; }
     
     public HashSet<Research>? Researchs { get; set; }
-    public HashSet<DeviceEvent>? DeviceEvents { get; set; }
+    
+    public HashSet<InstrumentMessage>? Messages { get; set; }
+    public HashSet<InstrumentEvent>? Events { get; set; }
 
-    public virtual string LookupName => $"{Device?.LookupName}, endpoint:{HostAddress}:{Port}";
+    public virtual string LookupName => $"Consumer: '{Consumer?.Name}', Instrument:'{Instrument?.LookupName}', endpoint: '{HostAddress}:{Port}'";
 }

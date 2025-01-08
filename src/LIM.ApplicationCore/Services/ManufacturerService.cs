@@ -63,11 +63,11 @@ public class ManufacturerService : AbstractService, IManufacturerService
         
         var entry = await _repository
             .Record<Manufacturer>()
-            .Include(x=>x.Devices)
+            .Include(x=>x.Instruments)
             .FirstOrDefaultAsync(x=>x.Id==id, _cts.Token) 
                     ?? throw CommonException.NotFound;
         
-        if(entry.Devices.Any())
+        if(entry.Instruments.Any())
             throw CommonException.ReferencesToObjectNotFree;
         
         if( 1 < await _repository.DeleteAsync(entry, _cts.Token))
@@ -80,7 +80,7 @@ public class ManufacturerService : AbstractService, IManufacturerService
     {
         var manufacturer = await _repository
             .Record<Manufacturer>()
-            .Include(x=>x.Devices)
+            .Include(x=>x.Instruments)
             .FirstOrDefaultAsync(x => x.Id == id, _cts.Token) 
                            ?? throw CommonException.NotFound;
         

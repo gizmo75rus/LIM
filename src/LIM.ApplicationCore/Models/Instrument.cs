@@ -7,7 +7,7 @@ namespace LIM.ApplicationCore.Models;
 /// <summary>
 /// Лабораторный инструмент (анализатор, устройство...)
 /// </summary>
-public class Device : BaseEntity<int>
+public class Instrument : BaseEntity<int>
 {
     public int? ManufacturerId { get; set; }
     /// <summary>
@@ -28,7 +28,7 @@ public class Device : BaseEntity<int>
     /// <summary>
     /// потребители
     /// </summary>
-    public HashSet<ConsumerDevice>? ConsumerDevices { get; set; }
+    public HashSet<ConsumerInstrument>? ConsumerDevices { get; set; }
 
     public virtual string LookupName => $"{Manufacturer?.Name} {Model}";
 }

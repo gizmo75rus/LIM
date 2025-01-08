@@ -4,7 +4,7 @@ namespace LIM.ApplicationCore.Dto;
 
 public class ConsumerDetail : ConsumerEntry
 {
-    public IEnumerable<ConsumerDeviceEntry>? Devices { get; set; }
+    public IEnumerable<ConsumerInstrumentEntry>? Devices { get; set; }
     public int? DevicesCount { get; set; }
 
     public new static ConsumerDetail Map(Consumer entity)
@@ -13,7 +13,7 @@ public class ConsumerDetail : ConsumerEntry
         {
             Id = entity.Id,
             Name = entity.Name,
-            Devices = entity.ConsumerDevices?.Select(ConsumerDeviceEntry.Map).ToList(),
+            Devices = entity.ConsumerDevices?.Select(ConsumerInstrumentEntry.Map).ToList(),
             DevicesCount = entity.ConsumerDevices?.Count ?? 0,
         };
     }

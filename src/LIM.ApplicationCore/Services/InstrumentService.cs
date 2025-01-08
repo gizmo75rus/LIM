@@ -10,29 +10,29 @@ using Microsoft.Extensions.Logging;
 
 namespace LIM.ApplicationCore.Services;
 
-public class DeviceService : AbstractService, IDeviceService
+public class InstrumentService : AbstractService, IInstrumentService
 {
     private readonly IRepository _repository;
-    public DeviceService(ILogger<DeviceService> logger, IRepository repository)
+    public InstrumentService(ILogger<InstrumentService> logger, IRepository repository)
     {
         _logger = logger;
         _repository = repository;
     }
 
-    public async Task<DeviceEntry> Detail(int deviceId) => 
-       DeviceEntry.Map(await _repository
-            .Record<Device>()
+    public async Task<InstrumentEntry> Detail(int deviceId) => 
+       InstrumentEntry.Map(await _repository
+            .Record<Instrument>()
             .Include(x=>x.Manufacturer)
             .FirstOrDefaultAsync(x =>x.Id == deviceId, _cts.Token)
         ?? throw CommonException.NotFound);
 
     public async Task<Dictionary<int, string>> GetLookUp() => 
         await _repository
-            .Record<Device>()
+            .Record<Instrument>()
             .Include(x=>x.Manufacturer)
             .ToDictionaryAsync(key => key.Id, value => value.LookupName, _cts.Token);
 
-    public async Task<DeviceEntry> Create(string manufacturerName, string model, ProtocolType protocol)
+    public async Task<InstrumentEntry> Create(string manufacturerName, string model, ProtocolType protocol)
     {
         _logger.LogInformation("Creating new device");
         var manufacturer = await _repository.Record<Manufacturer>()
@@ -45,43 +45,42 @@ public class DeviceService : AbstractService, IDeviceService
             _logger.LogInformation($"Manufacturer: {manufacturerName} has been created");
         }
 
-        var device = new Device()
+        var instrument = new Instrument()
         {
             ManufacturerId = manufacturer.Id,
             ProtocolType = protocol,
             Model = model
         };
-        int added = await _repository.AddAsync(device, _cts.Token);
 
-        if (added < 1)
+        if (1 < await _repository.AddAsync(instrument, _cts.Token))
             throw CommonException.FailedToSaveObject;
         
         _logger.LogInformation($"Device: '{manufacturerName}' model: '{model}' has been added");
         
-        device.Manufacturer = manufacturer;
+        instrument.Manufacturer = manufacturer;
         
-        return DeviceEntry.Map(device);
+        return InstrumentEntry.Map(instrument);
     }
 
     public async Task Modify(int deviceId, int manufacturerId, string model, ProtocolType protocol)
     {
         _logger.LogInformation($"Modifying device id:{manufacturerId} manufacturerId: {manufacturerId} model:{model}");
 
-        var device = await _repository.Record<Device>().FirstOrDefaultAsync(x => x.Id == deviceId);
+        var instrument = await _repository.Record<Instrument>().FirstOrDefaultAsync(x => x.Id == deviceId);
         var manufacturer = await _repository.Record<Manufacturer>()
             .FirstOrDefaultAsync(x => x.Id == deviceId);
 
-        if (device == null || manufacturer == null)
+        if (instrument == null || manufacturer == null)
         {
             _logger.LogInformation("Device or manufacturer not found");
             throw CommonException.NotFound;
         }
 
-        device.Model = model;
-        device.ProtocolType = protocol;
-        device.ManufacturerId = manufacturer.Id;
+        instrument.Model = model;
+        instrument.ProtocolType = protocol;
+        instrument.ManufacturerId = manufacturer.Id;
 
-        int modified = await _repository.UpdateAsync(device, _cts.Token);
+        int modified = await _repository.UpdateAsync(instrument, _cts.Token);
 
         if (modified < 1)
             throw CommonException.FailedToSaveObject;
@@ -92,19 +91,19 @@ public class DeviceService : AbstractService, IDeviceService
     public async Task Delete(int deviceId)
     {
         _logger.LogInformation($"Deleting device id:{deviceId}");
-        var device = await _repository.Record<Device>()
+        var instrument = await _repository.Record<Instrument>()
                          .Where(x => x.Id == deviceId)
                          .FirstOrDefaultAsync(_cts.Token) 
                      ?? throw CommonException.NotFound;
                     
         
         if (await _repository
-                .Record<ConsumerDevice>()
-                .AnyAsync(x => x.DeviceId == deviceId, _cts.Token))
+                .Record<ConsumerInstrument>()
+                .AnyAsync(x => x.InstrumentId == deviceId, _cts.Token))
             throw CommonException.ReferencesToObjectNotFree;
         
         
-        await _repository.DeleteAsync(device, _cts.Token);
+        await _repository.DeleteAsync(instrument, _cts.Token);
         _logger.LogInformation("Device has been deleted");
     }
 }

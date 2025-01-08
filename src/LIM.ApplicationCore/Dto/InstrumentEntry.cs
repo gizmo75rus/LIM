@@ -3,7 +3,7 @@ using LIM.ApplicationCore.Models;
 
 namespace LIM.ApplicationCore.Dto;
 
-public class DeviceEntry
+public class InstrumentEntry
 {
     public int Id { get; set; }
     public int? ManufacturerId { get; set; }
@@ -11,9 +11,9 @@ public class DeviceEntry
     public string? Model { get; set; }
     public ProtocolType? Protocol { get; set; }
 
-    public static DeviceEntry Map(Device entity)
+    public static InstrumentEntry Map(Instrument entity)
     {
-        return new DeviceEntry()
+        return new InstrumentEntry()
         {
             Id = entity.Id,
             Model = entity.Model,

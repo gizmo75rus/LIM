@@ -26,7 +26,7 @@ public class ConsumerService : AbstractService, IConsumerService
     public async Task<ConsumerDetail> Detail(int id) => 
         ConsumerDetail.Map(await _repository.Record<Consumer>()
                                .Include(x => x.ConsumerDevices)!
-                               .ThenInclude(x => x.Device)
+                               .ThenInclude(x => x.Instrument)
                                .ThenInclude(x => x!.Manufacturer)
                                .FirstOrDefaultAsync(x => x.Id == id, _cts.Token) 
                            ?? throw CommonException.NotFound);
@@ -59,12 +59,12 @@ public class ConsumerService : AbstractService, IConsumerService
     {
         _logger.LogInformation($"Removing consumer device: {consumerDeviceId}");
         var record = await 
-            _repository.Record<ConsumerDevice>()
+            _repository.Record<ConsumerInstrument>()
                 .Where(x=>x.Id == consumerDeviceId)
                 .FirstOrDefaultAsync(_cts.Token) 
                      ?? throw CommonException.NotFound;
         
-        if(record.DeviceEvents != null && record.DeviceEvents.Any())
+        if(record.Events != null && record.Events.Any())
             throw CommonException.ReferencesToObjectNotFree;
         
         if( 1 < await _repository.DeleteAsync(record, _cts.Token))

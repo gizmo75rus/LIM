@@ -2,10 +2,10 @@
 
 namespace LIM.ApplicationCore.Dto;
 
-public class ConsumerDeviceEntry
+public class ConsumerInstrumentEntry
 {
     public Guid Id { get; set; }
-    public DeviceEntry? Device { get; set; }
+    public InstrumentEntry? Device { get; set; }
     public string? DriverVersion { get; set; }
     
     public string? HostAddress { get; set; }
@@ -13,12 +13,12 @@ public class ConsumerDeviceEntry
 
     public byte? ConnectionType { get; set; }
 
-    public static ConsumerDeviceEntry Map(ConsumerDevice entity)
+    public static ConsumerInstrumentEntry Map(ConsumerInstrument entity)
     {
-        return new ConsumerDeviceEntry()
+        return new ConsumerInstrumentEntry()
         {
             Id = entity.Id,
-            Device = DeviceEntry.Map(entity.Device ?? throw new ArgumentNullException(nameof(entity.Device))),
+            Device = InstrumentEntry.Map(entity.Instrument ?? throw new ArgumentNullException(nameof(entity.Instrument))),
             DriverVersion = entity.DriverVersion,
             Port = entity.Port,
             HostAddress = entity.HostAddress,

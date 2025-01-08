@@ -12,7 +12,7 @@ public class ConsumersController : BaseController
     private const string LisVersion = "0.0.0.1";
     private readonly IConsumerService _consumerService;
 
-    public ConsumersController(IConsumerService consumerService, IConsumerDeviceService consumerDeviceService)
+    public ConsumersController(IConsumerService consumerService, IConsumerInstrumentService consumerInstrumentService)
     {
         _consumerService = consumerService;
     }

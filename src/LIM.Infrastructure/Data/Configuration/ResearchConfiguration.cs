@@ -27,7 +27,7 @@ public class ResearchConfiguration : IEntityTypeConfiguration<Research>
 
         builder.HasOne(x => x.ConsumerDevice)
             .WithMany(x => x.Researchs)
-            .HasForeignKey(x => x.ConsumerDeviceId)
+            .HasForeignKey(x => x.ConsumerInstrumentId)
             .OnDelete(DeleteBehavior.SetNull);
 
 

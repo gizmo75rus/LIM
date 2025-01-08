@@ -4,7 +4,7 @@ namespace LIM.ApplicationCore.Dto;
 
 public class ManufacturerDetail : ManufacturerEntry
 {
-    public IEnumerable<DeviceEntry>? Devices { get; set; }
+    public IEnumerable<InstrumentEntry>? Devices { get; set; }
     
     public int? DevicesCount { get; set; }
 
@@ -14,8 +14,8 @@ public class ManufacturerDetail : ManufacturerEntry
         {
             Id = manufacturer.Id,
             Name = manufacturer.Name,
-            Devices = manufacturer?.Devices?.Select(DeviceEntry.Map),
-            DevicesCount = manufacturer?.Devices?.Count,
+            Devices = manufacturer?.Instruments?.Select(InstrumentEntry.Map),
+            DevicesCount = manufacturer?.Instruments?.Count,
         };
     }
 }
