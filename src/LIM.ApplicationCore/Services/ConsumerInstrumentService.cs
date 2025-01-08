@@ -16,8 +16,8 @@ public class ConsumerInstrumentService : AbstractService, IConsumerInstrumentSer
     
     public ConsumerInstrumentService(ILogger<ConsumerInstrumentService> logger, IRepository repository)
     {
-        this._logger = logger;
-        this._repository = repository;
+        _logger = logger;
+        _repository = repository;
     }
     
     public async Task<ConsumerInstrumentEntry> AddInstrument(int consumerId, int instrumentId, string hostAddress, short port, ConnectionType connectionType, string driverVersion)
