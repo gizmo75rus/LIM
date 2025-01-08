@@ -5,7 +5,7 @@ using LIM.WebApp.Extensions;
 
 namespace LIM.WebApp.Models;
 
-public class CreateDeviceRequest
+public class CreateInstrumentRequest
 {
     public string ManufacturerName { get; set; } = string.Empty;
     public string Model { get; set; } = string.Empty;
@@ -13,7 +13,7 @@ public class CreateDeviceRequest
     public ProtocolType ProtocolType { get; set; } = ProtocolType.ASTM;
 }
 
-public class DeviceViewModelValidator : AbstractValidator<CreateDeviceRequest>
+public class DeviceViewModelValidator : AbstractValidator<CreateInstrumentRequest>
 {
     public DeviceViewModelValidator()
     {

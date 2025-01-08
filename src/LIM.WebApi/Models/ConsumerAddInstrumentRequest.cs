@@ -3,11 +3,11 @@ using LIM.ApplicationCore.Enums;
 
 namespace LIM.WebApp.Models;
 
-public class AddDeviceToConsumerRequest
+public class ConsumerAddInstrumentRequest
 {
     public int ConsumerId { get; set; }
     
-    public int DeviceId { get; set; }
+    public int InstrumentId { get; set; }
     public short Port { get; set; }
     public string HostAddress { get; set; } = String.Empty;
     
