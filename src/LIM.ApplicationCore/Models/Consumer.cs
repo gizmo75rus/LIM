@@ -20,6 +20,6 @@ public class Consumer : BaseEntity<int>
     /// <summary>
     /// Инструменты
     /// </summary>
-    public HashSet<ConsumerInstrument>? ConsumerDevices { get; set; }
+    public HashSet<ConsumerInstrument>? Instruments { get; set; }
 
 }

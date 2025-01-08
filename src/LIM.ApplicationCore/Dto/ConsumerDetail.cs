@@ -13,8 +13,8 @@ public class ConsumerDetail : ConsumerEntry
         {
             Id = entity.Id,
             Name = entity.Name,
-            Devices = entity.ConsumerDevices?.Select(ConsumerInstrumentEntry.Map).ToList(),
-            DevicesCount = entity.ConsumerDevices?.Count ?? 0,
+            Devices = entity.Instruments?.Select(ConsumerInstrumentEntry.Map).ToList(),
+            DevicesCount = entity.Instruments?.Count ?? 0,
         };
     }
 }

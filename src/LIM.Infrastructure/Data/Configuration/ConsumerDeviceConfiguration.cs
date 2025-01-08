@@ -14,7 +14,7 @@ public class ConsumerDeviceConfiguration : IEntityTypeConfiguration<ConsumerInst
         builder.IsJournaled();
         
         builder.HasOne(x => x.Consumer)
-            .WithMany(x => x.ConsumerDevices)
+            .WithMany(x => x.Instruments)
             .HasForeignKey(x => x.ConsumerId)
             .OnDelete(DeleteBehavior.SetNull);
         

@@ -54,4 +54,6 @@ public class ConsumerInstrument : JournaledEntity<Guid>
     public HashSet<InstrumentEvent>? Events { get; set; }
 
     public virtual string LookupName => $"Consumer: '{Consumer?.Name}', Instrument:'{Instrument?.LookupName}', endpoint: '{HostAddress}:{Port}'";
+
+    public override string ToString() => $"{Id}: {Instrument?.LookupName}, SerialNumber: {SerialNumber}, ConnectionType: {ConnectionType}, DriverVersion: {DriverVersion}";
 }

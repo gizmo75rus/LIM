@@ -25,7 +25,7 @@ public class ConsumerService : AbstractService, IConsumerService
     
     public async Task<ConsumerDetail> Detail(int id) => 
         ConsumerDetail.Map(await _repository.Record<Consumer>()
-                               .Include(x => x.ConsumerDevices)!
+                               .Include(x => x.Instruments)!
                                .ThenInclude(x => x.Instrument)
                                .ThenInclude(x => x!.Manufacturer)
                                .FirstOrDefaultAsync(x => x.Id == id, _cts.Token) 
@@ -102,11 +102,11 @@ public class ConsumerService : AbstractService, IConsumerService
         
         var entry = await _repository
             .Record<Consumer>()
-            .Include(x=>x.ConsumerDevices)!
+            .Include(x=>x.Instruments)!
             .FirstOrDefaultAsync(x => x.Id == id, _cts.Token) 
                     ?? throw CommonException.NotFound;
 
-        if (entry.ConsumerDevices != null && entry.ConsumerDevices.Any())
+        if (entry.Instruments != null && entry.Instruments.Any())
             throw CommonException.ReferencesToObjectNotFree;
         
         if(1 < await _repository.DeleteAsync(entry, _cts.Token))
