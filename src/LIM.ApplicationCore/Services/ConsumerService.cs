@@ -75,6 +75,9 @@ public class ConsumerService : AbstractService, IConsumerService
 
     public async Task Rename(int consumerId, string name)
     {
+        if (consumerId == int.MaxValue)
+            throw CommonException.ArgumentOutException;
+        
         _logger.LogInformation($"Renaming consumer name for entry Id: {consumerId}, new value: {name}");
         
         var consumer = await _repository
@@ -92,6 +95,9 @@ public class ConsumerService : AbstractService, IConsumerService
 
     public async Task Delete(int id)
     {
+        if (id == int.MaxValue)
+            throw CommonException.ArgumentOutException;
+        
         _logger.LogInformation($"Deleting consumer entry: {id}");
         
         var entry = await _repository

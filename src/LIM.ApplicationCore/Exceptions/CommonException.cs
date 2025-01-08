@@ -26,6 +26,9 @@ public class CommonException : Exception
     public static CommonException FailedToSaveObject =>
         new CommonException(ErrorCode.FailedToSaveObject, "Не удалось сохранить объект");
 
+    public static CommonException ArgumentOutException =>
+        new CommonException(ErrorCode.ValidationError, "Аргумент за пределами допустимых значений");
+
     public static CommonException ReferencesToObjectNotFree =>
         new CommonException(ErrorCode.ReferencesToObjectNotFree, "Имеются связи на указанный объект ");
 }

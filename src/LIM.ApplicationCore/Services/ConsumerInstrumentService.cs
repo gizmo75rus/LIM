@@ -22,6 +22,9 @@ public class ConsumerInstrumentService : AbstractService, IConsumerInstrumentSer
     
     public async Task<ConsumerInstrumentEntry> AddInstrument(int consumerId, int instrumentId, string hostAddress, short port, ConnectionType connectionType, string driverVersion)
     {
+        if(consumerId == int.MaxValue || instrumentId == int.MaxValue || port == short.MaxValue)
+            throw CommonException.ArgumentOutException;
+            
         _logger.LogInformation($"Add device to consumer [consumerId:{consumerId}, deviceId:{instrumentId}, hostAddress:{hostAddress}, port:{port}, connectionType:{connectionType}, driverVersion:{driverVersion}].]");
        
         if(!await _repository.Record<Consumer>().AnyAsync(x=>x.Id == consumerId, _cts.Token))
