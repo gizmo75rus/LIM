@@ -4,6 +4,7 @@ using LIM.ApplicationCore.Enums;
 using LIM.ApplicationCore.Exceptions;
 using LIM.ApplicationCore.Contracts;
 using LIM.ApplicationCore.Dto;
+using LIM.SharedKernel.BaseModels;
 using LIM.SharedKernel.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -26,11 +27,12 @@ public class InstrumentService : AbstractService, IInstrumentService
             .FirstOrDefaultAsync(x =>x.Id == deviceId, _cts.Token)
         ?? throw CommonException.NotFound);
 
-    public async Task<Dictionary<int, string>> GetLookUp() => 
+    public async Task<IEnumerable<Lookup>> GetLookUp() => 
         await _repository
             .Record<Instrument>()
             .Include(x=>x.Manufacturer)
-            .ToDictionaryAsync(key => key.Id, value => value.LookupName, _cts.Token);
+            .Select(x=> new Lookup(x.Id, x.LookupName))
+            .ToListAsync(_cts.Token);
 
     public async Task<InstrumentEntry> Create(string manufacturerName, string model, ProtocolType protocol)
     {

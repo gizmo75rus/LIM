@@ -1,6 +1,7 @@
 using Asp.Versioning;
 using LIM.ApplicationCore.Contracts;
 using LIM.ApplicationCore.Dto;
+using LIM.SharedKernel.BaseModels;
 using LIM.WebApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualBasic;
@@ -18,10 +19,10 @@ public class InstrumentsController : BaseController
     }
 
     [HttpGet]
-    [ProducesResponseType(typeof(AppResponce<Dictionary<int,string>>),200)]
+    [ProducesResponseType(typeof(AppResponce<IEnumerable<Lookup>>),200)]
     public async Task<IActionResult> LookUp()
     {
-        return Ok(AppResponce<Dictionary<int, string?>>.Ok(await _service.GetLookUp()));
+        return Ok(AppResponce<IEnumerable<Lookup>>.Ok(await _service.GetLookUp()));
     }
 
     [HttpGet("{id}")]

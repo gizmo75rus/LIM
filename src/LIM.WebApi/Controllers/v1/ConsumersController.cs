@@ -1,6 +1,7 @@
 using Asp.Versioning;
 using LIM.ApplicationCore.Contracts;
 using LIM.ApplicationCore.Dto;
+using LIM.SharedKernel.BaseModels;
 using LIM.WebApp.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,10 +19,10 @@ public class ConsumersController : BaseController
     }
 
     [HttpGet]
-    [ProducesResponseType(typeof(AppResponce<Dictionary<int,string>>),200)]
+    [ProducesResponseType(typeof(AppResponce<IEnumerable<Lookup>>),200)]
     public async Task<IActionResult> LookUp()
     {
-        return Ok(AppResponce<Dictionary<int,string?>>.Ok(await _consumerService.GetLookUp()));
+        return Ok(AppResponce<IEnumerable<Lookup>>.Ok(await _consumerService.GetLookUp()));
     }
 
     [HttpGet("{id}")]
@@ -41,11 +42,11 @@ public class ConsumersController : BaseController
     }
 
     [HttpPut("{id}")]
-    [ProducesResponseType(typeof(AppResponce<ConsumerEntry>), 200)]
+    [ProducesResponseType(typeof(AppResponce<ConsumerDetail>), 200)]
     public async Task<IActionResult> Rename([FromRoute]int id, string name)
     {
         await _consumerService.Rename(id, name);
-        return Ok(AppResponce<ConsumerEntry>.Ok(await _consumerService.Detail(id)));
+        return Ok(AppResponce<ConsumerDetail>.Ok(await _consumerService.Detail(id)));
     }
 
     [HttpDelete("{id}")]

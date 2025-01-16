@@ -3,6 +3,7 @@ using LIM.ApplicationCore.Contracts;
 using LIM.ApplicationCore.Dto;
 using LIM.ApplicationCore.Exceptions;
 using LIM.ApplicationCore.Models;
+using LIM.SharedKernel.BaseModels;
 using LIM.SharedKernel.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -19,13 +20,12 @@ public class ManufacturerService : AbstractService, IManufacturerService
         _repository = repository;
     }
     
-    public async Task<Dictionary<int, string?>> GetLookUp()
-    {
-        return await _repository
+    public async Task<IEnumerable<Lookup>> GetLookUp() =>
+        await _repository
             .Record<Manufacturer>()
-            .ToDictionaryAsync(key => key.Id, value => value.Name, _cts.Token);
-    }
-
+            .Select(m => new Lookup(m.Id, m.Name))
+            .ToListAsync(_cts.Token);
+    
     public async Task<ManufacturerEntry> Create(string name)
     {
         _logger.LogInformation($"Creating manufacturer entry for {name}");

@@ -4,6 +4,7 @@ using LIM.ApplicationCore.Exceptions;
 using LIM.ApplicationCore.Contracts;
 using LIM.ApplicationCore.Dto;
 using LIM.ApplicationCore.Enums;
+using LIM.SharedKernel.BaseModels;
 using LIM.SharedKernel.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -18,10 +19,11 @@ public class ConsumerService : AbstractService, IConsumerService
         _logger = logger;
         _repository = repository;
     }
-    
-    public async Task<Dictionary<int, string?>> GetLookUp() =>
+
+    public async Task<IEnumerable<Lookup>> GetLookUp() =>
         await _repository.Record<Consumer>()
-        .ToDictionaryAsync(key => key.Id, value => value.Name ?? default(string), _cts.Token);
+            .Select(c => new Lookup(c.Id, c.Name))
+            .ToListAsync(_cts.Token);
     
     public async Task<ConsumerDetail> Detail(int id) => 
         ConsumerDetail.Map(await _repository.Record<Consumer>()
