@@ -2,17 +2,10 @@
 
 namespace LIM.ApplicationCore.Dto;
 
-public class ManufacturerEntry
+public record ManufacturerEntry(int Id, string? Name)
 {
-    public int Id { get; set; }
-    public string? Name { get; set; }
-
     public static ManufacturerEntry Map(Manufacturer manufacturer)
     {
-        return new ManufacturerDetail
-        {
-            Id = manufacturer.Id,
-            Name = manufacturer.Name,
-        };
+        return new ManufacturerEntry(manufacturer.Id, manufacturer.Name);
     }
 }

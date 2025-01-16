@@ -1,4 +1,6 @@
-﻿namespace LIM.SharedKernel.Interfaces;
+﻿using LIM.SharedKernel.BaseModels;
+
+namespace LIM.SharedKernel.Interfaces;
 
 public interface ILookup
 {
@@ -6,5 +8,5 @@ public interface ILookup
     /// Получтиь данные для представления ключ-значение
     /// </summary>
     /// <returns></returns>
-    public Task<Dictionary<int, string?>> GetLookUp();
+    public Task<IEnumerable<Lookup>> GetLookUp();
 }

@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace LIM.Infrastructure.Data.Configuration;
 
-public class DeviceEventConfiguration : IEntityTypeConfiguration<DeviceEvent>
+public class InstrumentEventConfiguration : IEntityTypeConfiguration<InstrumentEvent>
 {
-    public void Configure(EntityTypeBuilder<DeviceEvent> builder)
+    public void Configure(EntityTypeBuilder<InstrumentEvent> builder)
     {
         builder.HasKey(x => x.Id);
         
@@ -19,12 +19,12 @@ public class DeviceEventConfiguration : IEntityTypeConfiguration<DeviceEvent>
             .HasColumnType("timestamp")
             .HasDefaultValueSql("CURRENT_TIMESTAMP");
         
-        builder.Property(x => x.Message)
+        builder.Property(x => x.Notes)
             .IsString(int.MaxValue);
         
-        builder.HasOne(x => x.ConsumerDevice)
-            .WithMany(x => x.DeviceEvents)
-            .HasForeignKey(x => x.ConsumerDeviceId)
+        builder.HasOne(x => x.ConsumerInstrument)
+            .WithMany(x => x.Events)
+            .HasForeignKey(x => x.ConsumerInstrumentId)
             .OnDelete(DeleteBehavior.SetNull);
     }
 }

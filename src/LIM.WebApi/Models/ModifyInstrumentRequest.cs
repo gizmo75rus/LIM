@@ -2,7 +2,7 @@
 
 namespace LIM.WebApp.Models;
 
-public class ModifyDeviceRequest
+public class ModifyInstrumentRequest
 {
     public int ManufacturerId { get; set; }
     public ProtocolType Protocol { get; set; }

@@ -2,20 +2,13 @@
 
 namespace LIM.ApplicationCore.Dto;
 
-public class ManufacturerDetail : ManufacturerEntry
+public record ManufacturerDetail(int Id, string? Name, IEnumerable<InstrumentEntry>? Instruments, int? InstrumentsCount) 
 {
-    public IEnumerable<DeviceEntry>? Devices { get; set; }
-    
-    public int? DevicesCount { get; set; }
-
     public new static ManufacturerDetail Map(Manufacturer manufacturer)
     {
-        return new ManufacturerDetail
-        {
-            Id = manufacturer.Id,
-            Name = manufacturer.Name,
-            Devices = manufacturer?.Devices?.Select(DeviceEntry.Map),
-            DevicesCount = manufacturer?.Devices?.Count,
-        };
+        return new ManufacturerDetail(Id: manufacturer.Id,
+            Name: manufacturer.Name,
+            Instruments: manufacturer?.Instruments?.Select(InstrumentEntry.Map),
+            InstrumentsCount: manufacturer?.Instruments?.Count);
     }
 }

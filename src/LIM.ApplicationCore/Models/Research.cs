@@ -8,7 +8,7 @@ namespace LIM.ApplicationCore.Models;
 /// </summary>
 public class Research : JournaledEntity<int>
 {
-    public Guid? ConsumerDeviceId { get; set; }
+    public Guid? ConsumerInstrumentId { get; set; }
 
     /// <summary>
     /// Тип биоматериала
@@ -39,9 +39,9 @@ public class Research : JournaledEntity<int>
     /// Наименование теста
     /// </summary>
     public string? Name { get; set; }
-    
+
     /// <summary>
     /// применяется на устройстве
     /// </summary>
-    public ConsumerDevice? ConsumerDevice { get; set; }
+    public ConsumerInstrument? ConsumerDevice { get; set; }
 }

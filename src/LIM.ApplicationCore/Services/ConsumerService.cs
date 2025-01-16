@@ -1,39 +1,42 @@
+using LIM.ApplicationCore.BaseObjects;
 using LIM.ApplicationCore.Models;
 using LIM.ApplicationCore.Exceptions;
 using LIM.ApplicationCore.Contracts;
 using LIM.ApplicationCore.Dto;
 using LIM.ApplicationCore.Enums;
+using LIM.SharedKernel.BaseModels;
 using LIM.SharedKernel.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace LIM.ApplicationCore.Services;
 
-public class ConsumerService : IConsumerService
+public class ConsumerService : AbstractService, IConsumerService
 {
-    private const int CtsLiveTimeMs = 10000; // 10 000ms = 10s
     private readonly IRepository _repository;
-    private readonly CancellationTokenSource _cts;
-
-    public ConsumerService(IRepository repository)
+    public ConsumerService(ILogger<ConsumerService> logger, IRepository repository)
     {
+        _logger = logger;
         _repository = repository;
-        _cts = new CancellationTokenSource(CtsLiveTimeMs);
     }
-    
-    public async Task<Dictionary<int, string?>> GetLookUp() =>
+
+    public async Task<IEnumerable<Lookup>> GetLookUp() =>
         await _repository.Record<Consumer>()
-        .ToDictionaryAsync(key => key.Id, value => value.Name ?? default(string), _cts.Token);
+            .Select(c => new Lookup(c.Id, c.Name))
+            .ToListAsync(_cts.Token);
     
     public async Task<ConsumerDetail> Detail(int id) => 
         ConsumerDetail.Map(await _repository.Record<Consumer>()
-                               .Include(x => x.ConsumerDevices)!
-                               .ThenInclude(x => x.Device)
+                               .Include(x => x.Instruments)!
+                               .ThenInclude(x => x.Instrument)
                                .ThenInclude(x => x!.Manufacturer)
                                .FirstOrDefaultAsync(x => x.Id == id, _cts.Token) 
                            ?? throw CommonException.NotFound);
     
     public async Task<ConsumerEntry> Create(string name, string lisVersion)
     {
+        _logger.LogInformation($"Creating consumer entry for {name} with version {lisVersion}");
+        
         if(string.IsNullOrEmpty(name) || string.IsNullOrEmpty(lisVersion))
             throw new ArgumentNullException(nameof(name));
         
@@ -46,30 +49,39 @@ public class ConsumerService : IConsumerService
             LisVersion = lisVersion
         };
         
-        int added = await _repository.AddAsync(consumer, _cts.Token);
-
-        if (added < 1)
+        if(1 < await _repository.AddAsync(consumer, _cts.Token))
             throw CommonException.FailedToSaveObject;
+        
+        _logger.LogInformation($"Created consumer entry Id: {consumer.Id}");
 
         return ConsumerEntry.Map(consumer);
     }
 
     public async Task RemoveDevice(Guid consumerDeviceId)
     {
+        _logger.LogInformation($"Removing consumer device: {consumerDeviceId}");
         var record = await 
-            _repository.Record<ConsumerDevice>()
+            _repository.Record<ConsumerInstrument>()
                 .Where(x=>x.Id == consumerDeviceId)
                 .FirstOrDefaultAsync(_cts.Token) 
                      ?? throw CommonException.NotFound;
         
-        if(record.DeviceEvents != null && record.DeviceEvents.Any())
+        if(record.Events != null && record.Events.Any())
             throw CommonException.ReferencesToObjectNotFree;
         
-        await _repository.DeleteAsync(record, _cts.Token);
+        if( 1 < await _repository.DeleteAsync(record, _cts.Token))
+            throw CommonException.FailedToSaveObject;
+        
+        _logger.LogInformation($"Removed consumer device: {record.Id}");
     }
 
     public async Task Rename(int consumerId, string name)
     {
+        if (consumerId == int.MaxValue)
+            throw CommonException.ArgumentOutException;
+        
+        _logger.LogInformation($"Renaming consumer name for entry Id: {consumerId}, new value: {name}");
+        
         var consumer = await _repository
             .Record<Consumer>()
             .Where(x => x.Id == consumerId)
@@ -77,23 +89,31 @@ public class ConsumerService : IConsumerService
                      ?? throw CommonException.NotFound;
         
         consumer.Name = name;
-        int modified = await _repository.UpdateAsync(consumer, _cts.Token);
-        
-        if(modified < 1)
+        if(1 < await _repository.UpdateAsync(consumer, _cts.Token))
             throw CommonException.FailedToSaveObject;
+        
+        _logger.LogInformation($"Renamed consumer entry Id: {consumerId}");
     }
 
     public async Task Delete(int id)
     {
+        if (id == int.MaxValue)
+            throw CommonException.ArgumentOutException;
+        
+        _logger.LogInformation($"Deleting consumer entry: {id}");
+        
         var entry = await _repository
             .Record<Consumer>()
-            .Include(x=>x.ConsumerDevices)!
+            .Include(x=>x.Instruments)!
             .FirstOrDefaultAsync(x => x.Id == id, _cts.Token) 
                     ?? throw CommonException.NotFound;
 
-        if (entry.ConsumerDevices != null && entry.ConsumerDevices.Any())
+        if (entry.Instruments != null && entry.Instruments.Any())
             throw CommonException.ReferencesToObjectNotFree;
         
-        await _repository.DeleteAsync(entry, _cts.Token);
+        if(1 < await _repository.DeleteAsync(entry, _cts.Token))
+            throw CommonException.FailedToSaveObject;
+        
+        _logger.LogInformation($"Deleted consumer entry Id: {id}");
     }
 }

@@ -2,16 +2,10 @@
 
 namespace LIM.ApplicationCore.Dto;
 
-public class ConsumerEntry
+public record ConsumerEntry(int Id, string? Name)
 {
-    public int Id { get; set; }
-    public string? Name { get; set; }
     public static ConsumerEntry Map(Consumer entity)
     {
-        return new ConsumerEntry()
-        {
-            Id = entity.Id,
-            Name = entity.Name
-        };
+        return new ConsumerEntry(entity.Id, entity.Name);
     }
 }

@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
@@ -6,18 +7,23 @@ using FluentValidation.AspNetCore;
 using LIM.Infrastructure;
 using LIM.WebApp.Filters;
 using LIM.WebApp.ServiceConfigurations;
+
 using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddLogging();
+LIM.Infrastructure.Serilog.LoggerHelper.AddLogger("LIM.WebApp");
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddVersioning();
 builder.Services.AddSwaggerGen();
 builder.Services.AddJwtAuthorization();
-builder.Services.AddNpgDbContext(builder.Configuration);
-//builder.Services.AddInMemoryDbContext();
+
+//builder.Services.AddNpgDbContext(builder.Configuration);
+builder.Services.AddInMemoryDbContext();
+
 builder.Services.AddControllers(x =>
 {
     x.Filters.Add(typeof(HttpGlobalExceptionFilter));

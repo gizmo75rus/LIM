@@ -5,22 +5,22 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace LIM.Infrastructure.Data.Configuration;
 
-public class ConsumerDeviceConfiguration : IEntityTypeConfiguration<ConsumerDevice>
+public class ConsumerDeviceConfiguration : IEntityTypeConfiguration<ConsumerInstrument>
 {
-    public void Configure(EntityTypeBuilder<ConsumerDevice> builder)
+    public void Configure(EntityTypeBuilder<ConsumerInstrument> builder)
     {
         builder.HasKey(x => x.Id);
 
         builder.IsJournaled();
         
         builder.HasOne(x => x.Consumer)
-            .WithMany(x => x.ConsumerDevices)
+            .WithMany(x => x.Instruments)
             .HasForeignKey(x => x.ConsumerId)
             .OnDelete(DeleteBehavior.SetNull);
         
-        builder.HasOne(x => x.Device)
+        builder.HasOne(x => x.Instrument)
             .WithMany(x => x.ConsumerDevices)
-            .HasForeignKey(x => x.DeviceId);
+            .HasForeignKey(x => x.InstrumentId);
         
         builder.Property(x => x.DriverVersion)
             .IsString(15);

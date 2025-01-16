@@ -24,11 +24,11 @@ public static class ServiceConfigurationExtensions
         return provider;
     }
     
-    // public static IServiceCollection AddInMemoryDbContext(this IServiceCollection services)
-    // {
-    //     services.AddDbContext<AppDbContext>(options =>
-    //         options.UseInMemoryDatabase("mem_db"));
-    //
-    //     return services;
-    // }
+    public static IServiceCollection AddInMemoryDbContext(this IServiceCollection services)
+    {
+        services.AddDbContext<AppDbContext>(options =>
+            options.UseInMemoryDatabase("Lim-Infrastructure-InMemDb"));
+    
+        return services;
+    }
 }
