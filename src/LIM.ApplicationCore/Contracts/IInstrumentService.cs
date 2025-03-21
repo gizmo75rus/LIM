@@ -4,10 +4,10 @@ using LIM.SharedKernel.Interfaces;
 
 namespace LIM.ApplicationCore.Contracts;
 
-public interface IDeviceService : IService, ILookup
+public interface IInstrumentService : IService, ILookup
 {
-    Task<DeviceEntry> Detail(int deviceId);
-    Task<DeviceEntry> Create(string manufacturer, string model, ProtocolType protocol);
+    Task<InstrumentEntry> Detail(int deviceId);
+    Task<InstrumentEntry> Create(string manufacturer, string model, ProtocolType protocol);
     Task Modify(int deviceId, int manufacturerId, string model, ProtocolType protocol);
     Task Delete(int deviceId);
 }

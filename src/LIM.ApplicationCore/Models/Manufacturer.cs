@@ -9,7 +9,7 @@ namespace LIM.ApplicationCore.Models;
 public class Manufacturer : BaseEntity<int>
 {
     public string? Name { get; set; }
-    public HashSet<Device> Devices { get; set; } = new HashSet<Device>();
+    public HashSet<Instrument> Instruments { get; set; } = new HashSet<Instrument>();
 
     public Manufacturer()
     {

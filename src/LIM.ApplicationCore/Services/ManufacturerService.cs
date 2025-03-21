@@ -1,71 +1,88 @@
-﻿using LIM.ApplicationCore.Contracts;
+﻿using LIM.ApplicationCore.BaseObjects;
+using LIM.ApplicationCore.Contracts;
 using LIM.ApplicationCore.Dto;
 using LIM.ApplicationCore.Exceptions;
 using LIM.ApplicationCore.Models;
+using LIM.SharedKernel.BaseModels;
 using LIM.SharedKernel.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace LIM.ApplicationCore.Services;
 
-public class ManufacturerService : IManufacturerService
+public class ManufacturerService : AbstractService, IManufacturerService
 {
-    private const int CtsTimeout = 10000; 
     private readonly IRepository _repository;
-    private readonly CancellationTokenSource _cts;
-
-    public ManufacturerService(IRepository repository)
+    
+    public ManufacturerService(ILogger<ManufacturerService> logger,  IRepository repository)
     {
+        _logger = logger;
         _repository = repository;
-        _cts = new CancellationTokenSource(CtsTimeout);
     }
-    public async Task<Dictionary<int, string?>> GetLookUp()
-    {
-        return await _repository.Record<Manufacturer>().ToDictionaryAsync(key => key.Id, value => value.Name, _cts.Token);
-    }
-
+    
+    public async Task<IEnumerable<Lookup>> GetLookUp() =>
+        await _repository
+            .Record<Manufacturer>()
+            .Select(m => new Lookup(m.Id, m.Name))
+            .ToListAsync(_cts.Token);
+    
     public async Task<ManufacturerEntry> Create(string name)
     {
+        _logger.LogInformation($"Creating manufacturer entry for {name}");
         var manufacturer = new Manufacturer { Name = name };
-        var added = await _repository.AddAsync(manufacturer, _cts.Token);
         
-        if(added < 1)
+        if( 1 < await _repository.AddAsync(manufacturer, _cts.Token))
             throw CommonException.FailedToSaveObject;
         
-        var entry = ManufacturerEntry.Map(manufacturer);
-        return entry;
+        _logger.LogInformation($"Created manufacturer entry Id: {manufacturer.Id}");
+        
+        return ManufacturerEntry.Map(manufacturer);
     }
 
     public async Task Rename(int id, string newName)
     {
+        _logger.LogInformation($"Renaming manufacturer entry for {newName}");
+        
         var entry = await _repository
             .Record<Manufacturer>()
             .Where(x => x.Id == id)
             .FirstOrDefaultAsync() 
-                    ?? throw new KeyNotFoundException();
+                    ?? throw CommonException.NotFound;
         
         entry.Name = newName;
-        await _repository.UpdateAsync(entry, _cts.Token);
+        
+        if(1 < await _repository.UpdateAsync(entry, _cts.Token))
+            throw CommonException.FailedToSaveObject;
+
+        _logger.LogInformation($"Updated manufacturer entry Id: {entry.Id}");
     }
 
     public async Task Delete(int id)
     {
+        _logger.LogInformation($"Deleting manufacturer entry for {id}");
+        
         var entry = await _repository
             .Record<Manufacturer>()
-            .Include(x=>x.Devices)
-            .FirstOrDefaultAsync(x=>x.Id==id, _cts.Token) ?? throw CommonException.NotFound;
+            .Include(x=>x.Instruments)
+            .FirstOrDefaultAsync(x=>x.Id==id, _cts.Token) 
+                    ?? throw CommonException.NotFound;
         
-        if(entry.Devices.Any())
+        if(entry.Instruments.Any())
             throw CommonException.ReferencesToObjectNotFree;
         
-        await _repository.DeleteAsync(entry, _cts.Token);
+        if( 1 < await _repository.DeleteAsync(entry, _cts.Token))
+            throw CommonException.FailedToSaveObject;
+        
+        _logger.LogInformation($"Deleted manufacturer entry Id: {entry.Id}");
     }
 
     public async Task<ManufacturerDetail> Detail(int id)
     {
         var manufacturer = await _repository
             .Record<Manufacturer>()
-            .Include(x=>x.Devices)
-            .FirstOrDefaultAsync(x => x.Id == id, _cts.Token) ?? throw CommonException.NotFound;
+            .Include(x=>x.Instruments)
+            .FirstOrDefaultAsync(x => x.Id == id, _cts.Token) 
+                           ?? throw CommonException.NotFound;
         
         return ManufacturerDetail.Map(manufacturer);
     }

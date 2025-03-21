@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace LIM.Infrastructure.Data.Configuration;
 
-public class DeviceConfiguration : IEntityTypeConfiguration<Device>
+public class InstrumentConfiguration : IEntityTypeConfiguration<Instrument>
 {
-    public void Configure(EntityTypeBuilder<Device> builder)
+    public void Configure(EntityTypeBuilder<Instrument> builder)
     {
         builder.HasKey(x => x.Id);
         
@@ -15,7 +15,7 @@ public class DeviceConfiguration : IEntityTypeConfiguration<Device>
             .IsString(100);
         
         builder.HasOne(x => x.Manufacturer)
-            .WithMany(x => x.Devices)
+            .WithMany(x => x.Instruments)
             .HasForeignKey(x=>x.ManufacturerId)
             .OnDelete(DeleteBehavior.SetNull);
     }
