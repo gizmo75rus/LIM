@@ -12,7 +12,7 @@ public partial class AppDbContext : DbContext
     private readonly ICurrentUserService _currentUserService;
     private readonly ILogger<AppDbContext> _logger;
 
-    public AppDbContext(ICurrentUserService currentUserService,ILogger<AppDbContext> logger, DbContextOptions<AppDbContext> options) : base(options)
+    public AppDbContext(DbContextOptions<AppDbContext> options, ICurrentUserService currentUserService,ILogger<AppDbContext> logger) : base(options)
     {
         _currentUserService = currentUserService;
         _logger = logger;
