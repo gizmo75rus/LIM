@@ -22,7 +22,7 @@ public class ConsumersController : BaseController
     [ProducesResponseType(typeof(AppResponce<IEnumerable<Lookup>>),200)]
     public async Task<IActionResult> LookUp()
     {
-        return Ok(AppResponce<IEnumerable<Lookup>>.Ok(await _consumerService.GetLookUp()));
+        return Ok(AppResponce<IEnumerable<Lookup>>.Ok(await _consumerService.GetLookup()));
     }
 
     [HttpGet("{id}")]

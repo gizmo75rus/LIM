@@ -22,7 +22,7 @@ public class InstrumentsController : BaseController
     [ProducesResponseType(typeof(AppResponce<IEnumerable<Lookup>>),200)]
     public async Task<IActionResult> LookUp()
     {
-        return Ok(AppResponce<IEnumerable<Lookup>>.Ok(await _service.GetLookUp()));
+        return Ok(AppResponce<IEnumerable<Lookup>>.Ok(await _service.GetLookup()));
     }
 
     [HttpGet("{id}")]

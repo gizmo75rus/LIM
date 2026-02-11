@@ -20,7 +20,7 @@ public class ConsumerService : AbstractService, IConsumerService
         _repository = repository;
     }
 
-    public async Task<IEnumerable<Lookup>> GetLookUp() =>
+    public async Task<IEnumerable<Lookup>> GetLookup() =>
         await _repository.Record<Consumer>()
             .Select(c => new Lookup(c.Id, c.Name))
             .ToListAsync(_cts.Token);
@@ -66,9 +66,14 @@ public class ConsumerService : AbstractService, IConsumerService
                 .FirstOrDefaultAsync(_cts.Token) 
                      ?? throw CommonException.NotFound;
         
-        if(record.Events != null && record.Events.Any())
+        if(await _repository
+               .Record<InstrumentEvent>()
+               .AnyAsync(x=>x.ConsumerInstrumentId == consumerDeviceId, _cts.Token)
+           || await _repository
+               .Record<InstrumentMessage>()
+               .AnyAsync(x=>x.ConsumerInstrumentId == consumerDeviceId, _cts.Token))
             throw CommonException.ReferencesToObjectNotFree;
-        
+
         if( 1 < await _repository.DeleteAsync(record, _cts.Token))
             throw CommonException.FailedToSaveObject;
         

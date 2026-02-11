@@ -1,5 +1,8 @@
 namespace LIM.SharedKernel.Interfaces;
 
+/// <summary>
+/// Журналируемая сущность. Содержит информацию о создании и изменениях.
+/// </summary>
 public interface IJournaledEntity
 {
     /// <summary>

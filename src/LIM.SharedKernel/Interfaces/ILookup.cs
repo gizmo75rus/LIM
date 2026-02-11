@@ -2,11 +2,14 @@
 
 namespace LIM.SharedKernel.Interfaces;
 
+/// <summary>
+/// Контракт справочника
+/// </summary>
 public interface ILookup
 {
     /// <summary>
-    /// Получтиь данные для представления ключ-значение
+    /// Получтиь данные справочника
     /// </summary>
     /// <returns></returns>
-    public Task<IEnumerable<Lookup>> GetLookUp();
+    public Task<IEnumerable<Lookup>> GetLookup();
 }

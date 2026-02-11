@@ -20,7 +20,7 @@ public class ManufacturerService : AbstractService, IManufacturerService
         _repository = repository;
     }
     
-    public async Task<IEnumerable<Lookup>> GetLookUp() =>
+    public async Task<IEnumerable<Lookup>> GetLookup() =>
         await _repository
             .Record<Manufacturer>()
             .Select(m => new Lookup(m.Id, m.Name))

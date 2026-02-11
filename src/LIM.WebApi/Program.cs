@@ -21,8 +21,8 @@ builder.Services.AddVersioning();
 builder.Services.AddSwaggerGen();
 builder.Services.AddJwtAuthorization();
 
-//builder.Services.AddNpgDbContext(builder.Configuration);
-builder.Services.AddInMemoryDbContext();
+builder.Services.AddPostgresDbContext(builder.Configuration);
+//builder.Services.AddInMemoryDbContext();
 
 builder.Services.AddControllers(x =>
 {
@@ -51,8 +51,11 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.Services.InitDbContext();
+    //for dev
+    app.Services.EnsureDbCreated();
 }
+
+//await app.Services.MigrateDbContextAsync();
 
 app.UseRouting();
 app.UseCors(options => options.AllowAnyOrigin());

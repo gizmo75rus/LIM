@@ -28,10 +28,12 @@ public class InstrumentMessageService : AbstractService, IInstrumentMessageServi
                .AnyAsync(x=> x.Id == consumerInstrumentId, _cts.Token))
             throw CommonException.NotFound;
             
-        var message = new InstrumentMessage();
-        message.ConsumerInstrumentId = consumerInstrumentId;
-        message.Direction = direction;
-        message.Body = body;
+        var message = new InstrumentMessage
+        {
+            ConsumerInstrumentId = consumerInstrumentId,
+            Direction = direction,
+            Body = body
+        };
 
         if (1 < await _repository.AddAsync(message, _cts.Token))
             throw CommonException.FailedToSaveObject;

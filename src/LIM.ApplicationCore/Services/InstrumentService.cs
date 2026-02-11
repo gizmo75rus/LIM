@@ -27,7 +27,7 @@ public class InstrumentService : AbstractService, IInstrumentService
             .FirstOrDefaultAsync(x =>x.Id == deviceId, _cts.Token)
         ?? throw CommonException.NotFound);
 
-    public async Task<IEnumerable<Lookup>> GetLookUp() => 
+    public async Task<IEnumerable<Lookup>> GetLookup() => 
         await _repository
             .Record<Instrument>()
             .Include(x=>x.Manufacturer)
@@ -38,7 +38,7 @@ public class InstrumentService : AbstractService, IInstrumentService
     {
         _logger.LogInformation("Creating new device");
         var manufacturer = await _repository.Record<Manufacturer>()
-                               .FirstOrDefaultAsync(x => x.Name == manufacturerName, _cts.Token);
+                               .FirstOrDefaultAsync(x => x.Name.ToLower() == manufacturerName.ToLower(), _cts.Token);
         if (manufacturer == null)
         {
             manufacturer = new Manufacturer(manufacturerName);
