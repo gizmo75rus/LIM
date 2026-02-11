@@ -3,8 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace LIM.Infrastructure;
-public static class ServiceConfigurationExtensions
+namespace LIM.Infrastructure.ServiceConfiguration;
+public static class DataBaseConfigurations
 {
     /// <summary>
     /// Регистрирует контекст БД с PostgreSQL (Npgsql)

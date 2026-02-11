@@ -5,6 +5,7 @@ using Autofac.Extensions.DependencyInjection;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using LIM.Infrastructure;
+using LIM.Infrastructure.ServiceConfiguration;
 using LIM.WebApp.Filters;
 using LIM.WebApp.ServiceConfigurations;
 
@@ -22,6 +23,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddJwtAuthorization();
 
 builder.Services.AddPostgresDbContext(builder.Configuration);
+builder.Services.AddIdentityService(builder.Configuration);
+
 //builder.Services.AddInMemoryDbContext();
 
 builder.Services.AddControllers(x =>
