@@ -27,6 +27,7 @@ public static class DataBaseConfigurations
     {
         using var scope = provider.CreateScope();
         var ctx = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        ctx.Database.EnsureDeleted();
         ctx.Database.EnsureCreated();
     }
     

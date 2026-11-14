@@ -48,6 +48,7 @@ public class HttpGlobalExceptionFilter : IExceptionFilter
             errors.Add(new AppError(ErrorCode.UnhandeledExeption,"Произошла непредвиденная ошибка. Повторите попытку позже"));
         }
 
+
         context.Result = new OkObjectResult(new AppResponce(errors));
         context.HttpContext.Response.StatusCode = (int)HttpStatusCode.OK;
         context.ExceptionHandled = true;

@@ -84,6 +84,6 @@ public class ConsumerInstrumentService : AbstractService, IConsumerInstrumentSer
             .Include(x => x.Consumer)
             .Include(x => x.Instrument)
             .ThenInclude(x => x.Manufacturer)
-            .ToDictionaryAsync(key=> key.Id,value=>value.LookupName, _cts.Token);
+            .ToDictionaryAsync(key => key.Id, value =>(string?)value.LookupName, _cts.Token);
     }
 }
