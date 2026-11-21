@@ -10,8 +10,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LIM.WebApi", "src\LIM.WebAp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LIM.UnitTests", "tests\LIM.UnitTests\LIM.UnitTests.csproj", "{E1AD2E17-A104-4798-BC47-21E5C0B0EC8A}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{827E0CD3-B72D-47B6-A68D-7590B98EB39B}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LIM.Connector", "src\LIM.Connector\LIM.Connector.csproj", "{E1976C11-E49A-4CC6-B264-BFAD883BB5C8}"
 EndProject
 Global

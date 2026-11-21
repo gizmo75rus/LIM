@@ -1,0 +1,169 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{AF2FEF81-4E8B-41D0-946F-EC378DD755FC}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>AstmDriver</RootNamespace>
+    <AssemblyName>AstmDriver</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Abstractions\AbstractAstmRecord.cs" />
+    <Compile Include="Abstractions\AbstractAstmSubRecord.cs" />
+    <Compile Include="Abstractions\AbstractTcpChannel.cs" />
+    <Compile Include="Abstractions\ApiResult.cs" />
+    <Compile Include="Abstractions\IHost.cs" />
+    <Compile Include="Abstractions\ILogger.cs" />
+    <Compile Include="Abstractions\IMessageWorker.cs" />
+    <Compile Include="Abstractions\ITransportChannel.cs" />
+    <Compile Include="Abstractions\TypeHelper.cs" />
+    <Compile Include="Behavior\Host\BeckmanCoulterHost.cs" />
+    <Compile Include="Behavior\Host\MllpHost.cs" />
+    <Compile Include="Behavior\Host\MetascanHost.cs" />
+    <Compile Include="Behavior\Host\MiuraHost.cs" />
+    <Compile Include="Behavior\MessageWorker\AbstractAstmWorker.cs" />
+    <Compile Include="Behavior\MessageWorker\AU480_Worker.cs" />
+    <Compile Include="Behavior\MessageWorker\Astm_Worker.cs" />
+    <Compile Include="Behavior\MessageWorker\Hl7WorkerBase.cs" />
+    <Compile Include="Behavior\MessageWorker\HL7_Worker.cs" />
+    <Compile Include="Behavior\MessageWorker\MedicalSystem_Worker.cs" />
+    <Compile Include="Behavior\MessageWorker\Metascan.cs" />
+    <Compile Include="Behavior\MessageWorker\Miura_Worker.cs" />
+    <Compile Include="Behavior\MessageWorker\Saphir400_Worker.cs" />
+    <Compile Include="Commons\API\ApiResultModels.cs" />
+    <Compile Include="Commons\ASTM\AstmDateTimeUsage.cs" />
+    <Compile Include="Commons\ASTM\AstmDateTimeUsageAttribute.cs" />
+    <Compile Include="Commons\ASTM\AstmEnumAttribute.cs" />
+    <Compile Include="Commons\ASTM\AstmExtensions.cs" />
+    <Compile Include="Commons\ASTM\AstmHelpers.cs" />
+    <Compile Include="Commons\ASTM\AstmRecord.cs" />
+    <Compile Include="Commons\ASTM\AstmRecordFieldAttribute.cs" />
+    <Compile Include="Commons\ASTM\AstmRecordRemainingFieldsAttribute.cs" />
+    <Compile Include="Commons\ASTM\AstmRecordType.cs" />
+    <Compile Include="Commons\ASTM\Delimiters.cs" />
+    <Compile Include="Commons\ASTM\HeaderProcessingID.cs" />
+    <Compile Include="Commons\ASTM\Message.cs" />
+    <Compile Include="Commons\ASTM\Models\HeaderRecord.cs" />
+    <Compile Include="Commons\ASTM\Models\OrderRecord.cs" />
+    <Compile Include="Commons\ASTM\Models\PatientName.cs" />
+    <Compile Include="Commons\ASTM\Models\PatientRecord.cs" />
+    <Compile Include="Commons\ASTM\Models\QueryRecord.cs" />
+    <Compile Include="Commons\ASTM\Models\ResultRecord.cs" />
+    <Compile Include="Commons\ASTM\Models\StartingRange.cs" />
+    <Compile Include="Commons\ASTM\Models\TerminatorRecord.cs" />
+    <Compile Include="Commons\ASTM\Models\UniversalTestID.cs" />
+    <Compile Include="Commons\ASTM\OrderActionCode.cs" />
+    <Compile Include="Commons\ASTM\OrderPriority.cs" />
+    <Compile Include="Commons\ASTM\OrderReportType.cs" />
+    <Compile Include="Commons\ASTM\PatientSex.cs" />
+    <Compile Include="Commons\ASTM\RecordFields.cs" />
+    <Compile Include="Commons\ASTM\ResultAbnormalFlags.cs" />
+    <Compile Include="Commons\ASTM\ResultNatureOfAbnormalityTestingSet.cs" />
+    <Compile Include="Commons\ASTM\ResultStatus.cs" />
+    <Compile Include="Commons\ASTM\Session.cs" />
+    <Compile Include="Commons\ASTM\TerminationCode.cs" />
+    <Compile Include="Commons\ChannelDataEventArgs.cs" />
+    <Compile Include="Commons\ChannelStatus.cs" />
+    <Compile Include="Commons\ConfigRepository.cs" />
+    <Compile Include="Commons\ControlCodesUtility.cs" />
+    <Compile Include="Commons\DataLinkControlCodes.cs" />
+    <Compile Include="Commons\DriverConfig.cs" />
+    <Compile Include="Commons\LocalStorage.cs" />
+    <Compile Include="Commons\NetworkExtension.cs" />
+    <Compile Include="Commons\ReceiveRecordEventArgs.cs" />
+    <Compile Include="Commons\ReceiveRecordEventHandler.cs" />
+    <Compile Include="Commons\SendProgressEventArgs.cs" />
+    <Compile Include="Commons\SystemExtensions.cs" />
+    <Compile Include="Core\ChannelFactory.cs" />
+    <Compile Include="Core\HostFactory.cs" />
+    <Compile Include="Core\MessageWorkerFactory.cs" />
+    <Compile Include="Core\TcpChannelServerV2.cs" />
+    <Compile Include="Core\TcpChannelServerV3.cs" />
+    <Compile Include="Exceptions\ArgumentConfigException.cs" />
+    <Compile Include="Models\AnalysisExtraCode.cs" />
+    <Compile Include="Models\Analyzer.cs" />
+    <Compile Include="Core\Dal.cs" />
+    <Compile Include="Core\FileLogger.cs" />
+    <Compile Include="Behavior\Host\AstmHost.cs" />
+    <Compile Include="Core\LoggerFactory.cs" />
+    <Compile Include="Core\TcpChannelClient.cs" />
+    <Compile Include="Core\TcpChannelServer.cs" />
+    <Compile Include="Exceptions\AstmProcessorEstablishmentFailedException.cs" />
+    <Compile Include="Exceptions\AstmProcessorException.cs" />
+    <Compile Include="Exceptions\AstmProcessorReceiveTimeOutException.cs" />
+    <Compile Include="Exceptions\HostConnectionException.cs" />
+    <Compile Include="Exceptions\TransportException.cs" />
+    <Compile Include="Models\Analysis.cs" />
+    <Compile Include="Models\MiuraOrder.cs" />
+    <Compile Include="Models\Order.cs" />
+    <Compile Include="Models\Patient.cs" />
+    <Compile Include="Models\TaskResult.cs" />
+    <Compile Include="Models\Tube.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Globals.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BaseLibraries\BaseLibraries.Ado\BaseLibraries.Ado.csproj">
+      <Project>{0b6abee8-1275-49bb-8289-46652680d9da}</Project>
+      <Name>BaseLibraries.Ado</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BaseLibraries\BaseLibraries.Models\BaseLibraries.Models.csproj">
+      <Project>{72e8bbe0-88be-4b67-964c-8047d3df3b39}</Project>
+      <Name>BaseLibraries.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BaseLibraries\BaseLibraries\BaseLibraries.csproj">
+      <Project>{7f6b3025-54da-4f9d-88ee-8d8c7053db33}</Project>
+      <Name>BaseLibraries</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Behavior\Host\Readme.md" />
+    <Content Include="Behavior\MessageWorker\Readme.md" />
+    <Content Include="readme.md" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
